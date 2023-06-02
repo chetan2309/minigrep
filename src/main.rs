@@ -20,6 +20,9 @@ fn main() {
 
 impl Config {
     fn new(args: &[String]) -> Config {
+        if args.len() < 3 {
+            panic!(" Not enough arguments to proceed")
+        }
         Config {
             query: args[1].clone(),
             file_path: args[2].clone(),
