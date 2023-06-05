@@ -16,15 +16,25 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments to proceed");
-        }
+    pub fn new(
+        mut args: impl Iterator<Item = String>
+    ) -> Result<Config, &'static str> {
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't et the error string"),
+        };
+
+        let path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get the file path"),
+        };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         Ok(Config {
-            query: args[1].clone(),
-            file_path: args[2].clone(),
+            query: query,
+            file_path: path,
             ignore_case
         })
     }
