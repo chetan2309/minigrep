@@ -1,8 +1,8 @@
 use std::error::Error;
-use std::{fs, env};
+use std::{env, fs};
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let contents= fs::read_to_string(config.file_path)?;
+    let contents = fs::read_to_string(config.file_path)?;
     let response = if config.ignore_case {
         search_case_insensitive(&config.query, &contents)
     } else {
@@ -16,9 +16,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 impl Config {
-    pub fn new(
-        mut args: impl Iterator<Item = String>
-    ) -> Result<Config, &'static str> {
+    pub fn new(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
         args.next();
 
         let query = match args.next() {
@@ -35,7 +33,7 @@ impl Config {
         Ok(Config {
             query: query,
             file_path: path,
-            ignore_case
+            ignore_case,
         })
     }
 }
@@ -43,28 +41,21 @@ impl Config {
 pub struct Config {
     pub query: String,
     pub file_path: String,
-    pub ignore_case: bool
+    pub ignore_case: bool,
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut response_vector = Vec::new();
-    for line in contents.lines() {
-      if line.contains(query) {
-        response_vector.push(line);
-      }
-    }
-    response_vector
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut response_vector = Vec::new();
-    let query = query.to_lowercase();
-    for line in contents.lines() {
-      if line.to_lowercase().contains(&query) {
-        response_vector.push(line);
-      }
-    }
-    response_vector
+    contents
+        .lines()
+        .filter(|line| line.to_lowercase().contains(&query.to_lowercase()))
+        .collect()
 }
 
 #[cfg(test)]
