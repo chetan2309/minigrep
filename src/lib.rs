@@ -24,15 +24,15 @@ impl Config {
             None => return Err("Didn't et the error string"),
         };
 
-        let path = match args.next() {
+        let file_path = match args.next() {
             Some(arg) => arg,
             None => return Err("Didn't get the file path"),
         };
 
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         Ok(Config {
-            query: query,
-            file_path: path,
+            query,
+            file_path,
             ignore_case,
         })
     }
